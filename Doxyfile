@@ -1,0 +1,12 @@
+PROJECT_NAME           = "Matrix Calculator"
+PROJECT_BRIEF          = "Библиотека для работы с матрицами на C++"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = include src
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+HAVE_DOT               = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
