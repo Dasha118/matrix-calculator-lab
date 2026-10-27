@@ -1,0 +1,36 @@
+name: Matrix Calculator CI
+on:
+  push:
+    branches: [ main ]     
+  pull_request:
+    branches: [ main ]    
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          # Устанавливаем компилятор, сборщик, документацию, графы и анализатор памяти
+          sudo apt-get install -y cmake g++ doxygen graphviz valgrind
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+      - name: Build
+        run: cmake --build build --parallel $(nproc)
+      - name: Run tests
+        run: ctest --test-dir build --verbose
+      - name: Check memory leaks
+        run: |
+          # Запускаем бинарник тестов через valgrind
+          # --leak-check=full: показывать подробности утечек
+          # --error-exitcode=1: если найдены ошибки, вернуть код 1 (упадет шаг CI)
+          valgrind --leak-check=full --error-exitcode=1 ./build/tests/matrix_tests
+      - name: Generate documentation
+        run: doxygen Doxyfile
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: docs/html
